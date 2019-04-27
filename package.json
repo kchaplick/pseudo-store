@@ -1,0 +1,12 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "allows customers and managers to interact with store inventory",
+  "main": "bamazon.js",
+  "dependencies": {
+    "inquirer": "^6.2.1",
+    "mysql": "^2.16.0"
+  }
+}
+
+
