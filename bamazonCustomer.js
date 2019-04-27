@@ -25,9 +25,18 @@ connection.connect(function(err) {
 
 function start(){
 //list all items and their information
+connection.query("SELECT * FROM products", function(err, res) {
+  if (err) throw err;
+  
+  //for loop
+  for (var i = 0; i < res.length; i++){
+    console.log(
+      `Item ID: ${res[i].item_id} || Name: ${res[i].product_name} || Department: ${res[i].dept_name} || Price: ${res[i].price} || Stock: ${res[i].stock_quantity}`
+    )
+  } 
 
 
-
+  })
 }
 
 
