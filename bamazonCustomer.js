@@ -34,8 +34,6 @@ function start() {
         `Item ID: ${res[i].item_id} || Name: ${res[i].product_name} || Department: ${res[i].dept_name} || Price: ${res[i].price} || Stock: ${res[i].stock_quantity}`
       )
     }
-
-
     selectItem();
   })
 
@@ -43,7 +41,7 @@ function start() {
 
 
 function selectItem() {
-  
+
   //list all items and their information
   connection.query("SELECT product_name FROM products ", function (err, res) {
     if (err) throw err;
@@ -52,51 +50,51 @@ function selectItem() {
         name: "selectItem",
         type: "list",
         message: "What would you like to purchase",
-        choices: function(){
+        choices: function () {
           //create an array to hold product names
           var productsToChoose = [];
-          for (var i = 0; i < res.length; i++){
+          for (var i = 0; i < res.length; i++) {
             productsToChoose.push(res[i].product_name);
-          } 
+          }
           return productsToChoose;
         }
-    })
+      })
       .then(function (answer) {
         selectQuantity(answer.selectItem);
       });
   });
-} 
+}
 
-function selectQuantity(product){
+function selectQuantity(product) {
   inquirer
-  .prompt({
-    name: "selectQuantity",
-    type: "number",
-    message: "How many would you like to purchase",
-})
-  .then(function (answer) {
-    
-    connection.query("SELECT product_name, stock_quantity, price FROM products WHERE ?",
-    [
-      {
-        product_name: product
-      }
-    ],
-     function (err, res) {
-      if (err) throw err;
-      if (res[0].stock_quantity < answer.selectQuantity){
-        console.log("Sorry there is not enough stock")
-        selectQuantity(product);
-      }else{
-        var total = parseInt(res[0].price) * parseInt(answer.selectQuantity)
-        console.log(`Your total is $${total}`)
-        updateStock(product, answer, res[0].stock_quantity)
-      }
-  });
-})
+    .prompt({
+      name: "selectQuantity",
+      type: "number",
+      message: "How many would you like to purchase",
+    })
+    .then(function (answer) {
+
+      connection.query("SELECT product_name, stock_quantity, price FROM products WHERE ?",
+        [
+          {
+            product_name: product
+          }
+        ],
+        function (err, res) {
+          if (err) throw err;
+          if (res[0].stock_quantity < answer.selectQuantity) {
+            console.log("Sorry there is not enough stock")
+            selectQuantity(product);
+          } else {
+            var total = parseInt(res[0].price) * parseInt(answer.selectQuantity)
+            console.log(`Your total is $${total}`)
+            updateStock(product, answer, res[0].stock_quantity)
+          }
+        });
+    })
 };
 
-function updateStock(product, answer, currentStock){
+function updateStock(product, answer, currentStock) {
   var newStock = currentStock - answer.selectQuantity
   connection.query(
     "UPDATE products SET ? WHERE ?",
@@ -109,25 +107,24 @@ function updateStock(product, answer, currentStock){
       }
     ],
 
-    function(err) {
+    function (err) {
       if (err) throw err;
       inquirer
-      .prompt({
-        name: "orderAgain",
-        type: "confirm",
-        message: "Would you like to make another purchase",
-      })
-      .then(function (answer) {
-        console.log(answer);
-        if(answer.orderAgain === true){
-        start();
-        }else{
-         console.log("Thanks for shopping");
-         connection.end();
-      }
-      
-      })
-    }  
+        .prompt({
+          name: "orderAgain",
+          type: "confirm",
+          message: "Would you like to make another purchase",
+        })
+        .then(function (answer) {
+          if (answer.orderAgain === true) {
+            start();
+          } else {
+            console.log("Thanks for shopping");
+            connection.end();
+          }
+
+        })
+    }
   )
 };
 
