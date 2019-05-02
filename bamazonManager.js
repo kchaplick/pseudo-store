@@ -12,7 +12,7 @@ var connection = mysql.createConnection({
   user: "root",
 
   // Your password
- 
+  password: "crystal92",
   database: "bamazon_db"
 });
 
@@ -89,7 +89,6 @@ function selectQuantity(product) {
             var total = parseInt(res[0].price) * parseInt(answer.selectQuantity)
             console.log(`Your total is $${total}`)
             updateStock(product, answer, res[0].stock_quantity)
-            // updateSales(total);
           }
         });
     })
@@ -128,38 +127,4 @@ function updateStock(product, answer, currentStock) {
     }
   )
 };
-
-// function updateSales(totalSale) {
-//   var newStock = currentStock - answer.selectQuantity
-//   connection.query(
-//     "UPDATE products SET ? WHERE ?",
-//     [
-//       {
-//         stock_quantity: newStock
-//       },
-//       {
-//         product_name: product
-//       }
-//     ],
-
-//     function (err) {
-//       if (err) throw err;
-//       inquirer
-//         .prompt({
-//           name: "orderAgain",
-//           type: "confirm",
-//           message: "Would you like to make another purchase",
-//         })
-//         .then(function (answer) {
-//           if (answer.orderAgain === true) {
-//             start();
-//           } else {
-//             console.log("Thanks for shopping");
-//             connection.end();
-//           }
-
-//         })
-//     }
-//   )
-// };
 
